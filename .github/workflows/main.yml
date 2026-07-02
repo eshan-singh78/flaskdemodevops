@@ -17,12 +17,10 @@ jobs:
 
       - name: Deploy to Azure VM
         uses: appleboy/ssh-action@v1.2.0
-
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-
           script: |
             APP_DIR=~/apps/flaskdemodevops
             REPO_URL=https://github.com/eshan-singh78/flaskdemodevops.git
@@ -48,8 +46,13 @@ jobs:
 
             pip install -r requirements.txt
 
-            # Stop old app
+            echo "Stopping old app..."
             pkill -f "python.*app.py" || true
 
-            # Start app
-            nohup venv/bin/python app.py > app.log 2>&1 &
+            echo "Starting new app..."
+            nohup venv/bin/python app.py > app.log 2>&1 < /dev/null &
+
+            sleep 5
+
+            echo "Checking process..."
+            ps -ef | grep app.py
