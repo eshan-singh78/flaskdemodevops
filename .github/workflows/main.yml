@@ -24,20 +24,22 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
 
           script: |
-            APP_DIR=~/app/flaskdemodevops
+            APP_DIR=~/apps/flaskdemodevops
             REPO_URL=https://github.com/eshan-singh78/flaskdemodevops.git
 
+            # Create apps directory
             mkdir -p ~/apps
 
-            if[ ! -d "$APP_DIR/.git" ]; then
+            # Clone if not present
+            if [ ! -d "$APP_DIR/.git" ]; then
               git clone "$REPO_URL" "$APP_DIR"
             fi
 
-            
-            cd ~/apps/flaskdemodevops
+            cd "$APP_DIR"
 
-            git pull
+            git pull origin main
 
+            # Create virtual environment if needed
             if [ ! -d "venv" ]; then
               python3 -m venv venv
             fi
@@ -46,6 +48,8 @@ jobs:
 
             pip install -r requirements.txt
 
-            pkill -f "python app.py" || true
+            # Stop old app
+            pkill -f "python.*app.py" || true
 
+            # Start app
             nohup venv/bin/python app.py > app.log 2>&1 &
