@@ -24,6 +24,16 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
 
           script: |
+            APP_DIR=~/app/flaskdemodevops
+            REPO_URL=https://github.com/eshan-singh78/flaskdemodevops.git
+
+            mkdir -p ~/apps
+
+            if[ ! -d "$APP_DIR/.git" ]; then
+              git clone "$REPO_URL" "$APP_DIR"
+            fi
+
+            
             cd ~/apps/flaskdemodevops
 
             git pull
