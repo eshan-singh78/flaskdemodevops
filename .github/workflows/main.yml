@@ -46,7 +46,15 @@ jobs:
 
             pip install -r requirements.txt
 
-
+            echo "Stopping old app..."
+            OLD_PIDS=$(pgrep -f "python.*app.py" || true)
+            if [ -n "$OLD_PIDS" ]; then
+              echo "Found old app pids: $OLD_PIDS"
+              kill $OLD_PIDS || true
+              sleep 2
+            else
+              echo "No running app process found."
+            fi
 
             echo "Starting new app..."
             nohup venv/bin/python app.py > app.log 2>&1 < /dev/null &
