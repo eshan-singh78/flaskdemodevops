@@ -2,11 +2,11 @@ from flask import Flask
 
 app = Flask(__name__)
 
-app.route('/')
+@app.route('/')
 def home():
     return "Hello, World!"
 
-app.route('/health')
+@app.route('/health')
 def health():
     return {"status": "healthy"}
 
